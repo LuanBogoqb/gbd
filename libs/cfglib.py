@@ -1,5 +1,5 @@
 from json import dumps, loads, JSONDecodeError
-from os import cpu_count, remove, path, mkdir, getcwd
+from os import remove, path, mkdir, getcwd
 
 class ConfigManager():
 
@@ -30,7 +30,7 @@ class ConfigManager():
 
             if not path.exists(self.dwpath):
                 mkdir(self.dwpath)
-
+            self.dwpath = path.join(getcwd(),self.dwpath)
         # Caso não seja bem sucedido o parsing ou seja em formato incorreto, cria a config denovo.
         # Caso esteja sem permissão, recusa e sai.
         except FileNotFoundError:

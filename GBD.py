@@ -2,7 +2,7 @@
 from libs import cfglib as Config
 from libs.gbulib import downloadpost, getposts
 from time import sleep
-from threading import Thread, enumerate
+from threading import Thread
 
 #Define o controlador de configs.
 cfg = None
@@ -32,19 +32,28 @@ def main(cfg):
 
     print('Download has started and will shortly start, the script is not stuck. please be patient.')
 
-    #Inicia downloads.
+    threads = []
     for post in posts:
         url = post
         name = post.split('/')[-1]
+
         if cfg.multithreaded:
-            if not len(enumerate()) > 10:
-                Thread(target=downloadpost, args=(url, name, cfg.dwpath), daemon=True).start()
-            else:
+            while len(threads) >= 10:
+                for t in list(threads):
+                    if not t.is_alive():
+                        threads.remove(t)
                 sleep(0.1)
+
+            thread = Thread(target=downloadpost, args=(url, name, cfg.dwpath), daemon=False)
+            thread.start()
+            threads.append(thread)
         else:
             downloadpost(url, name, cfg.dwpath)
-    while not len(enumerate()) == 1:
-        sleep(0.5)
+
+    for t in threads:
+        t.join()
+
+    print("Download finished.")
     exit()
 
 if __name__ == '__main__':

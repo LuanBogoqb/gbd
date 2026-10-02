@@ -9,7 +9,7 @@ class ConfigManager():
         self.userid: str = ''
         self.apikey: str = ''
         self.dwpath: str = ''
-        self.multithreaded: bool = False
+        self.multithreaded: bool = True
 
         try:
             with open('config.json', 'r') as file:
@@ -20,11 +20,11 @@ class ConfigManager():
                 self.dwpath = config['downloads']['path']
                 self.multithreaded = bool(config['system']['multithreaded'])
                 del config
-            #OBS: Esse valor serve pra que as threads não sobrecarreguem o sistema.
-            #AVISO: isso PODE deixar os Downloads mais lentos.
+
+            #AVISO: Multithreading OFF, VAI deixar os Downloads mais lentos.
             if not self.multithreaded:
                 print(f'''WARNING: Multi-threaded downloads are OFF. it CAN make the time to download\nLonger since it will download one-by-one.''')
-                cpu_cores = cpu_count()
+
             else:
                 print(f"NOTE: Multi-threading is ON. Network Band-width can spike.")
 

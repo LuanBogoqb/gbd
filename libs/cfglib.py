@@ -26,14 +26,13 @@ class ConfigManager():
                 print(f'''WARNING: Multi-threaded downloads are OFF. it CAN make the time to download\nLonger since it will download one-by-one.''')
 
             else:
-                print(f"NOTE: Multi-threading is ON. Network Band-width can spike.")
+                print(f"NOTE: Multi-threading is ON. Network Bandwidth can spike.")
 
             if not path.exists(self.dwpath):
                 mkdir(self.dwpath)
 
-            dwpath = path.join(getcwd(), self.dwpath)
-        # Caso não seja bem sucedido o parsing ou seja em formato incorreto, cria o arquivo denovo.
-        # Caso esteja sem permissão ou sei la oque só da erro e sai do programa antes que faz mais cagada.
+        # Caso não seja bem sucedido o parsing ou seja em formato incorreto, cria a config denovo.
+        # Caso esteja sem permissão, recusa e sai.
         except FileNotFoundError:
             print('config.json not found')
             self._saveconfig()

@@ -8,9 +8,9 @@ def downloadpost(url:str, name:str, downloadpath:str):
         if not exists(join(downloadpath, name)):
             savefile(getdata(url), name, downloadpath)
         else:
-            print(f'Download already exists! skipping: {name}')
+            print(f'Post is already downloaded! skipping: {name}')
     except OSError:
-        print('could not save file. Halting.')
+        print('Could not save file. stoping...')
         exit()
 #Baixa os dados em byte do arquivo no GelBooru
 def getdata(url: str):
@@ -45,13 +45,13 @@ def getposts(tags: str, pages: int, api: str, apikey:str, userid:str) -> list:
             'user_id': userid
         }
         try:
-            bulk = get(api, params=params)
+            query = get(api, params=params)
         except TimeoutError:
             raise ConnectionError('Connection timed out')
-        if bulk.status_code != 200:
+        if query.status_code != 200:
             raise ConnectionError('connection error')
-        bulk = bulk.json()
-        for post in bulk['post']:
+        batch = query.json()
+        for post in batch['post']:
             posts.append(post['file_url'])
         sleep(1)
         i += 1

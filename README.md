@@ -1,4 +1,4 @@
-# GelBooru Bulk Downloader
+# GBD - GelBooru Bulk Downloader
 
 Bulk downloader de imagens e videos do **GelBooru**, escrito em **Python**, com foco em:
 
@@ -46,25 +46,7 @@ pip install -r requirements.txt
 
 ## ⚙️ Configuração
 
-Antes de executar o projeto, configure seus dados no arquivo `configlib.py`.
-
-```python
-{
-    "gelbooru": {
-        "endpoint": "https://gelbooru.com/index.php"
-    },
-    "credentials": {
-        "userid": "<SEU USER ID>",
-        "apikey": "<SUA CHAVE API>"
-    },
-    "downloads": {
-        "folder": "<SEU LOCAL DE DOWNLOAD>"
-    },
-    "system": {
-        "allow_cpu_get_overwhelmed_by_downloads": false
-    }
-}
-```
+Quando executar GBD.py, ele irá criar um config.json na raiz. configure com suas credenciais e o caminho para downloads.
 
 ---
 

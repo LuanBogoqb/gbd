@@ -1,25 +1,21 @@
-#Importa só o nessesario. sem deixar cluter na memoria.
-
-#Bibilhoteca Personalizada pra evitar cluter na logica principal.
-import configlib
-from gelboorulib import downloadpost, getposts
-
+#Importar Bibilhotecas
+from libs import configlib as Config
+from libs.gelboorulib import downloadpost, getposts
 from time import sleep
 from threading import Thread, enumerate
-from requests import get
 
-
+#Define o controlador de configs.
+cfg = None
 
 #Define as tags que o usuario quer e o tanto de paginas que o usuario quer carregar.
-def main():
+def main(cfg):
     tags = str(input('Please enter tags separated by spaces: '))
 
 
     while True:
-        # Previne que o usuario quer cagar com o codigo com um 1,* ou string.
+        # Trata erros de input.
         try:
             pages = int(input('Please enter pages you would like to download (10 posts per page): '))
-
             # Verifica se o ser humano tem mente o suficiente e não mete um -1.
             if pages <= 0:
                 print(' Please enter a valid amount of pages.')
@@ -28,39 +24,33 @@ def main():
         except ValueError:
            print('please enter a valid integer.')
 
-
-
-
-    #Evita que o GelBooru retorne 401, 404 ou algo desse tipo.
+    #Tenta puxar a lista de posts.
     try:
-        posts = getposts(tags, pages, configlib.api, configlib.apikey, configlib.userid)
+        posts = getposts(tags, pages, cfg.api, cfg.apikey, cfg.userid)
     except ConnectionError:
         print('Connection error, please try again later.')
         exit()
 
     print('Downloads take time! the script is not stuck. please be patient.')
+
+    #Inicia downloads.
     for post in posts:
         url = post
         name = post.split('/')[-1]
-        match configlib.allow_past_handle:
-            case False:
-                # Deixa pelo menos 1 LPU pro sistema. evita Fatal Crash.
-                if not len(enumerate()) > configlib.cpu_cores - 1:
-                    Thread(target=downloadpost, args=(url, name, configlib.downloadpath), daemon=True).start()
-                else:
-                    sleep(0.1)
-            case True:
-                Thread(target=downloadpost, args=(url, name, configlib.downloadpath), daemon=True).start()
+        if cfg.multithreaded:
+            if not len(enumerate()) > 10:
+                Thread(target=downloadpost, args=(url, name, cfg.dwpath), daemon=True).start()
+            else:
+                sleep(0.1)
+        else:
+            Thread(target=downloadpost, args=(url, name, cfg.dwpath), daemon=True).start()
     while not len(enumerate()) == 1:
         sleep(0.5)
     exit()
 
-
 if __name__ == '__main__':
-    # Carrega Config
-    configlib.loadconfig()
-    # Executa Logica Principal.
+    cfg = Config.ConfigManager()
     try:
-        main()
+        main(cfg=cfg)
     except KeyboardInterrupt:
         exit()

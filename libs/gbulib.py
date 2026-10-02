@@ -6,16 +6,14 @@ from os.path import join, exists
 def downloadpost(url:str, name:str, downloadpath:str):
     try:
         if not exists(join(downloadpath, name)):
-            savefile(getdata(url), name, downloadpath)
+            savefile(get(url).content, name, downloadpath)
         else:
             print(f'Post is already downloaded! skipping: {name}')
+        return
     except OSError:
         print('Could not save file. stoping...')
         exit()
-#Baixa os dados em byte do arquivo no GelBooru
-def getdata(url: str):
-    data = get(url)
-    return bytes(data.content)
+    
 
 #Salva arquivo em disco com os dados do getdata
 def savefile(data: bytes, name: str, downloadpath:str):
@@ -23,7 +21,7 @@ def savefile(data: bytes, name: str, downloadpath:str):
         with open(join(downloadpath, name), "wb") as file:
             file.write(data)
             print(f'Wrote Succesfully: {name}')
-        return True
+        return
     except (OSError or IOError or PermissionError) as error:
         raise OSError(error)
 
